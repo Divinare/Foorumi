@@ -44,20 +44,15 @@ router.post('/', function (req, res, next) {
 // POST /topics/:id/message
 router.post('/:id/message', function (req, res, next) {
     // Lisää tällä id:llä varustettuun aihealueeseen...
-//    var topicId = req.params.id;
+    var topicId = req.params.id;
     // ...tämä viesti (Vinkki: lisää ensin messageToAdd-objektiin kenttä TopicId, jonka arvo on topicId-muuttujan arvo ja käytä sen jälkeen create-funktiota)
-/*
     var messageToAdd = req.body;
     messageToAdd.TopicId = topicId;
-    Models.Message.create({
-        title: messageToAdd.title,
-        content: messageToAdd.content
-    }).then(function(message) {
-        console.log("added " + title);
+    Models.Message.create(messageToAdd).then(function(message) {
+        console.log(message);
         res.send(message);
     })
-    */
-    res.send(200);
+
 });
 
 module.exports = router;
