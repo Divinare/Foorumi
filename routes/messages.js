@@ -7,34 +7,32 @@ var Models = require('../models');
 // Huom! Kaikki polut alkavat polulla /messages
 
 // GET /messages/:id
-router.get('/:id', function(req, res, next) {
-  // Hae viesti tällä id:llä ja siihen liittyvät vastaukset tässä (Vinkki: findOne ja sopiva include)
-  var messageId = req.params.id;
-  Models.Messages.findOne({
-      where: {id: messageId},
-      include: {
-        model: reply
-      }
-  }).then(function(message) {
-      console.log(message);
-      res.send(message);
-  })
+router.get('/:id', function (req, res, next) {
+    // Hae viesti tällä id:llä ja siihen liittyvät vastaukset tässä (Vinkki: findOne ja sopiva include)
+    var messageId = req.params.id;
+    Models.Message.findOne({
+        where: { id: messageId },
+        include: {
+            model: Models.Reply,
+            include: {
+               model: Model.User
+            }
+        }
+    }).then(function(message) {
+        res.send(message);
+    });
 });
 
 // POST /messages/:id/reply
-router.post('/:id/reply', function(req, res, next){
-  // Lisää tällä id:llä varustettuun viestiin...
-  var messageId = req.params.id;
-  // ...tämä vastaus (Vinkki: lisää ensin replyToAdd-objektiin kenttä MessageId, jonka arvo on messageId-muuttujan arvo ja käytä sen jälkeen create-funktiota)
-  var replyToAdd = req.body;
-  replyToAdd.MessageId = messageId;
-  Models.Message.Create(replyToAdd).then(function(reply) {
-      console.log("reply added:");
-      console.log(reply);
-      res.send(JSON.parse(reply));
-  })
+router.post('/:id/reply', authentication, function (req, res, next){
 
-  // Palauta vastauksena lisätty vastaus
+  var messageId = req.params.id;
+  var replyToAdd = req.body;
+  replyToAdd.UserId = req.session.userId;
+  replyToAdd.MessageId = messageId;
+  Models.Reply.create(replyToAdd).then(function(reply) {
+      res.send(reply);
+  })
 });
 
 module.exports = router;

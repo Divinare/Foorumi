@@ -10,11 +10,12 @@ FoorumApp.controller('TopicsListController', function($scope, $location, Api){
               var topic = Api.addTopic({
                    name: $scope.newTopic.name,
                    description: $scope.newTopic.description
+              })        
+              .success(function (data, status, headers, config) {
+                  $location.path('/topics/' + data.id)
               });
-              // $location.path('/topics/id'); - mistä sen id:n saa?
+
          }
-         $scope.newTopic.name = '';
-         $scope.newTopic.description = '';
     }
 
 });
